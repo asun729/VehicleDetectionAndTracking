@@ -1,5 +1,4 @@
-## Writeup Template
-### You can use this file as a template for your writeup if you want to submit it as a markdown file, but feel free to use some other method and submit a pdf if you prefer.
+## Vehicle Detection
 
 ---
 
@@ -28,11 +27,16 @@ The goals / steps of this project are the following:
 ### Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
 
 ---
+### Update in resubmission
+* Used svc.decision_function instead of svc.predict, to eliminate some false positives.
+* Update the search window program for finer steps and multiple window sizes
+* Reduced the false positives in output video. 
+
 ### Submission
 
-* VehicleDetect_Final.ipynb: The jupyter note of vehicle detection program implemented in Python3.  
-* Readme.ipynb: Documents the method and parameters used in the Vehicle Detection program. You're reading it!
-* project_video_output.mp4: The output video with detected vehicles highlighted
+* VehicleDetect_new_submit.ipynb: The jupyter note of vehicle detection program implemented in Python3.  
+* Readme.md: Documents the method and parameters used in the Vehicle Detection program. You're reading it!
+* project_video_output_th7_fine_step.mp4: The output video with detected vehicles highlighted
 * output_images: Folder contains all intermediate output images during development
 
 ---
@@ -107,12 +111,6 @@ A linear support vector classification (linearSVC) was used to train the classif
 
 #### 1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
 
-I decided to search random window positions at random scales all over the image and came up with this (ok just kidding I didn't actually ;):
-
-![alt text][image3]
-
-#### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
-
 Ultimately I searched on three scales using YCrCb channel-1 HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result.  Two window sizes were used becaulse of the perspective issue. Vehicles near the camera are larger than the further ones. Therefore, a larger window (2.5) saved much simulation time. Different searching steps were used in different perspective as well.
 
 ```py
@@ -135,9 +133,13 @@ Ultimately I searched on three scales using YCrCb channel-1 HOG features plus sp
 ```
 
 
-Also, since the vehicle could only appear on the road, only the bottom half of the image was scanned. Here is a view of the sliding windows:
+Also, since the vehicle could only appear on the road and the left side is barrier, only the bottom half of the image was scanned. Here is a view of the sliding windows:
 
 ![alt text][image4]
+
+#### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
+
+
 ---
 
 ### Video Implementation
