@@ -111,7 +111,22 @@ A linear support vector classification (linearSVC) was used to train the classif
 
 #### 1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
 
-Ultimately I searched on three scales using YCrCb channel-1 HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result.  Two window sizes were used becaulse of the perspective issue. Vehicles near the camera are larger than the further ones. Therefore, a larger window (2.5) saved much simulation time. Different searching steps were used in different perspective as well.
+The sliding windows are generated through `slide_window` function in cell 7. The searching algorithm is implemented in `search_windows` function in cell 8. Basically the function takes an image and crops it with interested regions. Then it generate the steps based on window sizes and overlap ratio. The search algorithm applies the classifier on the windows and make a prediction. 
+
+I used svc.decision_function instead of svc.predict. It reflects the confidence of the prediction and helps eliminate some false positives.
+```py
+if clf.decision_function(test_features)>0.6:
+            on_windows.append(window)
+```
+
+The window sizes, overlap ratio, and decision threshold are determined by tradeoff between accuracy and computation speed. I created 3 clilps from the 50 seconds video and examine combinations of the parameters. 
+
+
+#### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
+
+Ultimately I searched on two scales using YCrCb channel-1 HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result. Two window sizes(72x72, 128x128) were used becaulse of the perspective issue. Vehicles near the camera are larger than the further ones. Therefore, a larger window (128x128) saved much simulation time. Different searching steps were used in different perspective as well. The further view takes 85% overlap in each step while the closer view take 75% overlap. 
+
+After generating the two lists of windows through slide_window, the list are merged and fed to search windows. The setup is same as classfier training parameters. Later, the detection results will be converted to heatmap and combined with the previous frame to reduce the  positve falses. This process is elaborated in the new session.
 
 ```py
     y_start_stop = [390, 490] # Min and max in y to search in slide_window()
@@ -136,9 +151,6 @@ Ultimately I searched on three scales using YCrCb channel-1 HOG features plus sp
 Also, since the vehicle could only appear on the road and the left side is barrier, only the bottom half of the image was scanned. Here is a view of the sliding windows:
 
 ![alt text][image4]
-
-#### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
-
 
 ---
 
